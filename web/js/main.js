@@ -12,14 +12,14 @@ h[0].innerHTML = "Hello, Ребята!";
 if(debug){
     console.log("Произошла замена текста в теге H1");
 }
-let inputText = document.getElementById("inputText");
+const inputText = document.getElementById("inputText");
 inputText.value = "Это вставленный с помощью js текст";
 
 //var
 //let
 const clickMe = document.getElementById("clickMe");
 clickMe.addEventListener('click',e=>{
-    for(let i=0; i < h.length;i++){
+    for(let i=0; i < h.length; i++){
         if(i===0){
             h[i].innerHTML=inputText.value;
         }else{
@@ -28,6 +28,5 @@ clickMe.addEventListener('click',e=>{
         }
     }
     document.getElementById('myText').innerHTML='Это мой текст';
-    
-  inputText.value = '';
+    inputText.value = '';
 })
