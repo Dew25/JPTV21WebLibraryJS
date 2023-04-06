@@ -175,7 +175,7 @@ async function printListBooks(){
                     const book = listBooks[i];//получаем книгу из массива и вставляем из нее данные в html с помощью {{...}}
                     let cart = `<div class="card " style="width: 18rem">
                                     <a href="book?id=${book.id}">
-                                        <img src="insertFile/${book.cover.url}" class="card-img-top" alt="...">
+                                        <img src="insertFile/${book.cover.url}" class="card-img-top image-size" alt="...">
                                     </a>
                                 </div>`;
                                 
