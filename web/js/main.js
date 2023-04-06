@@ -6,6 +6,10 @@ const newBook = document.getElementById('newBook');
     newBook.addEventListener('click', e=>{
         printCreateBook();
 });
+const listBooks = document.getElementById('listBooks');
+    listBooks.addEventListener('click',e=>{
+        printListBooks();
+    });
 async function printCreateBook(){
     document.getElementById('content').innerHTML=
         `<h3 class="w-100 mt-5 d-flex justify-content-center">Новая книга</h3>
@@ -152,4 +156,31 @@ async function createNewCover(){
     .cathch(error => {
         document.getElementById('info').innerHTML="Ошибка createNewCover: "+error;
     });
+}
+async function printListBooks(){
+    document.getElementById('content').innerHTML=
+            `<h3 class="w-100 mt-5 d-flex justify-content-center">Список книг</h3>
+                <div id="box_listBooks" class="w-100 d-flex justify-content-center p-5">
+                    
+                </div>`;
+    await fetch('listBooks',{
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+    })
+            .then(listBooks=>listBooks.json())//преобразовываем полученную строку в которой
+    //записан json-массив с книгами в js-массив
+            .then(listBooks => {
+                let boxListBooks = document.getElementById('box_listBooks');//сюда будем вставлять карты с книгами
+                for(let i=0;i<listBooks.length;i++){
+                    const book = listBooks[i];//получаем книгу из массива и вставляем из нее данные в html с помощью {{...}}
+                    let cart = `<div class="card " style="width: 18rem">
+                                    <a href="book?id=${book.id}">
+                                        <img src="insertFile/${book.cover.url}" class="card-img-top" alt="...">
+                                    </a>
+                                </div>`;
+                                
+                    boxListBooks.insertAdjacentHTML("beforeend", cart);
+                }
+            })
+            .catch(error => "error: "+error);
 }

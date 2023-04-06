@@ -42,6 +42,8 @@ import session.CoverFacade;
     "/createBook",
     "/createCover",
     "/getListCovers",
+    "/listBooks",
+    
     
 })
 @MultipartConfig
@@ -147,6 +149,41 @@ public class BookServlet extends HttpServlet {
                 }
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jab.build().toString());
+                }
+                break;
+            case "/listBooks":
+                //создаем json-массив jabBooks для книг
+                JsonArrayBuilder jabBooks = Json.createArrayBuilder();
+                List<Book> listBooks = bookFacade.findAll();
+                for (int i = 0; i < listBooks.size(); i++) {
+                    Book b = listBooks.get(i);
+                    //для массива авторов книги создаем json-массив jabAuthors
+                    JsonArrayBuilder jabAuthors = Json.createArrayBuilder();
+                    for (int j = 0; j < b.getAuthors().size(); j++) {
+                        Author a = b.getAuthors().get(j);
+                        job = Json.createObjectBuilder();
+                        job.add("id", a.getId());
+                        job.add("firstname", a.getFirstname());
+                        job.add("lastname", a.getLastname());
+                        jabAuthors.add(job.build()); //в json-массиве лежат json объекты авторов
+                    };
+                    //создаем json-объект Cover
+                    JsonObjectBuilder jsonCover = Json.createObjectBuilder();//создаем json-объект Cover
+                    jsonCover.add("id", b.getCover().getId());
+                    jsonCover.add("url", b.getCover().getUrl());
+                    jsonCover.add("description",b.getCover().getDescription()); 
+                    //создаем json-объект книги
+                    job = Json.createObjectBuilder();
+                    job.add("id", b.getId());
+                    job.add("bookName", b.getBookName());
+                    job.add("publishedYear", b.getPublishedYear());
+                    job.add("quantity", b.getQuantity());
+                    job.add("cover", jsonCover.build());
+                    job.add("authors", jabAuthors.build());
+                    jabBooks.add(job.build());// в json-массиве jabBooks дежат json-объекты книг
+                }
+                try (PrintWriter out = response.getWriter()) {
+                    out.println(jabBooks.build().toString()); //отправляем в out json-массив с книгами в виде строки
                 }
                 break;
         }
