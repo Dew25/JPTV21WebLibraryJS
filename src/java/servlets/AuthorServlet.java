@@ -6,7 +6,7 @@
  */
 package servlets;
 
-import convertors.ConvertMapToJson;
+import convertors.ConvertToJson;
 import entity.Author;
 import entity.Book;
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class AuthorServlet extends HttpServlet {
                         }
                     };
                 }
-                ConvertMapToJson cmtj = new ConvertMapToJson();
+                ConvertToJson cmtj = new ConvertToJson();
                 String jsonString = cmtj.getJsonObjectMap(mapAuthorBooks).toString();
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jsonString); //отправляем в out json-массив с книгами в виде строки
