@@ -1,6 +1,4 @@
-/*
- */
-"use strict";
+import {authorModule} from './AuthorModule.js';
 let debug = false;
 const newBook = document.getElementById('newBook');
     newBook.addEventListener('click', e=>{
@@ -9,6 +7,10 @@ const newBook = document.getElementById('newBook');
 const listBooks = document.getElementById('listBooks');
     listBooks.addEventListener('click',e=>{
         printListBooks();
+    });
+const listAuthors = document.getElementById('listAuthors');
+    listAuthors.addEventListener('click',e=>{
+        authorModule.printListAuthors();
     });
 async function printCreateBook(){
     document.getElementById('content').innerHTML=
