@@ -7,7 +7,6 @@ package convertors;
 
 import entity.Author;
 import entity.Book;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,10 +26,11 @@ public class ConvertMapToJson {
         JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
         for(Entry entry: mapAuthors.entrySet()){
             Author author = (Author) entry.getKey();
-            JsonObject JsonObjectAuthor = getJsonObjectAuthor(author);
+            JsonObject jsonObjectAuthor = getJsonObjectAuthor(author);
             List<Book> authorBooks = (List<Book>) entry.getValue();
             JsonArray jsonArrayBooks = getJsonArrayBooks(authorBooks);
-            jsonEntryObjectBuilder.add(JsonObjectAuthor.toString(),jsonArrayBooks);
+            jsonEntryObjectBuilder.add("author",jsonObjectAuthor);
+            jsonEntryObjectBuilder.add("authorBooks",jsonArrayBooks);
             jsonMapBuilder.add(jsonEntryObjectBuilder.build());
         }
         return jsonMapBuilder.build(); 

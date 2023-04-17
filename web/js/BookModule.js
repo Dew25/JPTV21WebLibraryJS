@@ -129,6 +129,9 @@ class BookModule{
                 })
                 .catch(error=>console.log('error: '+error));
     }
+    printBook(id){
+        console.log('Печатается книга с id='+id);
+    }
 }
 const bookModule = new BookModule();
 export {bookModule};
