@@ -60,15 +60,15 @@ class AuthorModule{
        })
                .then(response=>response.json())
                .then(response => {
-                    //console.log(JSON.stringify(response));
+                    console.log(JSON.stringify(response));
                     let content = document.getElementById('content');
                     content.innerHTML = '';
-                    let cart = `
+                    let html = `
                     <h3 class="w-100 mt-5 d-flex justify-content-center">Список авторов</h3>
                     <div id="box_listAuthors" class="w-100 d-flex justify-content-center p-5">
 
                     </div>`;
-                    content.insertAdjacentHTML("beforeend", cart);
+                    content.insertAdjacentHTML("beforeend", html);
                     let table = document.createElement('table');
                     table.setAttribute('class','table w-50');
                     let headers = ["№", "Автор", "Книги автора"];
@@ -88,11 +88,11 @@ class AuthorModule{
                         let td1 = tr.insertCell();
                         td1.innerHTML = i+1;
                         let td2 = tr.insertCell();
-                        td2.innerHTML = entry.author.firstname+' '+entry.author.lastname;
+                        td2.innerHTML = entry.key.firstname+' '+entry.key.lastname;
                         let td3 = tr.insertCell();
                         td3.innerHTML = '';
-                        for(let j = 0;j< entry.authorBooks.length;j++){
-                            let book = entry.authorBooks[j];
+                        for(let j = 0;j< entry.value.length;j++){
+                            let book = entry.value[j];
                             tr = tbody.insertRow();
                             td1 = tr.insertCell();
                             td1.innerHTML = '';

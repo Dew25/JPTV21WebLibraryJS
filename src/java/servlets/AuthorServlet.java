@@ -6,7 +6,7 @@
  */
 package servlets;
 
-import convertors.ConvertMapToJson;
+import convertors.ConvertToJson;
 import entity.Author;
 import entity.Book;
 import java.io.IOException;
@@ -15,11 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -100,8 +97,8 @@ public class AuthorServlet extends HttpServlet {
                         }
                     };
                 }
-                ConvertMapToJson cmtj = new ConvertMapToJson();
-                String jsonString = cmtj.getJsonObjectMap(mapAuthorBooks).toString();
+                ConvertToJson convertToJson = new ConvertToJson();
+                String jsonString = convertToJson.getJsonObjectMap(mapAuthorBooks).toString();
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jsonString); //отправляем в out json-массив с книгами в виде строки
                 }

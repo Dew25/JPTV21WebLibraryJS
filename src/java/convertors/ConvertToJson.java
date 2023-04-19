@@ -7,6 +7,7 @@ package convertors;
 
 import entity.Author;
 import entity.Book;
+import entity.Cover;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,17 +21,21 @@ import javax.json.JsonObjectBuilder;
  *
  * @author Melnikov
  */
-public class ConvertMapToJson {
+public class ConvertToJson {
     public JsonArray getJsonObjectMap(Map<Author, List<Book>> mapAuthors){
         JsonArrayBuilder jsonMapBuilder = Json.createArrayBuilder();
         JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
+        //Чтобы получить значения mapAuthors в цикле проходим 
+        //по множеству внутреннего класса Entry, в котором есть два поля: key и value
+        //в key лежит объект типа Author, а в value - List<Book> массив написаных автором книг
+        // Для удобства написали методы конвертации в JsonObject и JsonArray формат объектов книг и авторов
         for(Entry entry: mapAuthors.entrySet()){
             Author author = (Author) entry.getKey();
-            JsonObject jsonObjectAuthor = getJsonObjectAuthor(author);
             List<Book> authorBooks = (List<Book>) entry.getValue();
+            JsonObject jsonObjectAuthor = getJsonObjectAuthor(author);
             JsonArray jsonArrayBooks = getJsonArrayBooks(authorBooks);
-            jsonEntryObjectBuilder.add("author",jsonObjectAuthor);
-            jsonEntryObjectBuilder.add("authorBooks",jsonArrayBooks);
+            jsonEntryObjectBuilder.add("key",jsonObjectAuthor);
+            jsonEntryObjectBuilder.add("value",jsonArrayBooks);
             jsonMapBuilder.add(jsonEntryObjectBuilder.build());
         }
         return jsonMapBuilder.build(); 
@@ -43,6 +48,7 @@ public class ConvertMapToJson {
         job.add("lastname", author.getLastname());
         return job.build();
     }
+    
     public JsonObject getJsonObjectBook(Book book){
         JsonObjectBuilder job = Json.createObjectBuilder();
         JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -53,6 +59,7 @@ public class ConvertMapToJson {
         job.add("authors", getJsonArrayAuthors(book.getAuthors()));
         return job.build();
     }
+    
     public JsonArray getJsonArrayAuthors(List<Author>listAuthors){
         JsonArrayBuilder jar = Json.createArrayBuilder();
         for (int i = 0; i < listAuthors.size(); i++) {
@@ -61,6 +68,7 @@ public class ConvertMapToJson {
         }
         return jar.build();
     }
+    
     public JsonArray getJsonArrayBooks(List<Book>listBooks){
         JsonArrayBuilder jar = Json.createArrayBuilder();
         for (int i = 0; i < listBooks.size(); i++) {
@@ -68,5 +76,19 @@ public class ConvertMapToJson {
             jar.add(getJsonObjectBook(book));
         }
         return jar.build();
+    }
+    public JsonArray getJsonArrayCovers(List<Cover> listCovers){
+        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonObjectBuilder job = Json.createObjectBuilder();
+        for (int i = 0; i < listCovers.size(); i++) {
+            Cover cover = listCovers.get(i);
+            job = Json.createObjectBuilder();
+            job.add("id", cover.getId().toString());
+            job.add("url",cover.getUrl());
+            job.add("description",cover.getDescription());
+            job.build();
+        }
+        return jar.add(job).build();
+        
     }
 }

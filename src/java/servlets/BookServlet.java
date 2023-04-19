@@ -6,6 +6,7 @@
  */
 package servlets;
 
+import convertors.ConvertToJson;
 import entity.Author;
 import entity.Book;
 import entity.Cover;
@@ -13,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -137,18 +137,10 @@ public class BookServlet extends HttpServlet {
                 }
                 break;
             case "/getListCovers":
-                JsonArrayBuilder jab = Json.createArrayBuilder();
                 List<Cover>listCovers = coverFacade.findAll();
-                for (int i = 0; i < listCovers.size(); i++) {
-                    cover = listCovers.get(i);
-                    job = Json.createObjectBuilder();
-                    job.add("id", cover.getId().toString());
-                    job.add("url",cover.getUrl());
-                    job.add("description",cover.getDescription());
-                    jab.add(job.build());
-                }
+                ConvertToJson convertToJson = new ConvertToJson();
                 try (PrintWriter out = response.getWriter()) {
-                    out.println(jab.build().toString());
+                    out.println(convertToJson.getJsonArrayCovers(listCovers).toString());
                 }
                 break;
             case "/listBooks":
