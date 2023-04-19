@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Конвертор создает JsonObject/JsonArray формат классов Java.
+ * Используйте соответствующие методы для преобразования.
  */
 package convertors;
 
@@ -22,6 +21,12 @@ import javax.json.JsonObjectBuilder;
  * @author Melnikov
  */
 public class ConvertToJson {
+
+    /**
+     * Преобразование Map<Author, List<Book>> в JsonArray объектов JsonEntry
+     * @param mapAuthors
+     * @return JsonArray - массив объектов JsonEntry с ключем "author" и значением "authorBooks"
+     */
     public JsonArray getJsonObjectMap(Map<Author, List<Book>> mapAuthors){
         JsonArrayBuilder jsonMapBuilder = Json.createArrayBuilder();
         JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
@@ -51,7 +56,6 @@ public class ConvertToJson {
     
     public JsonObject getJsonObjectBook(Book book){
         JsonObjectBuilder job = Json.createObjectBuilder();
-        JsonArrayBuilder jab = Json.createArrayBuilder();
         job.add("id", book.getId());
         job.add("bookName", book.getBookName());
         job.add("publishedYear", book.getPublishedYear());
