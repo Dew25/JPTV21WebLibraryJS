@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -35,6 +36,7 @@ import session.BookFacade;
 @WebServlet(name = "AuthorServlet", urlPatterns = {
     "/createAuthor",
     "/listAuthors",
+    "/listAuthorsWithoutBooks",
     
     
 })
@@ -101,6 +103,14 @@ public class AuthorServlet extends HttpServlet {
                 String jsonString = convertToJson.getJsonObjectMap(mapAuthorBooks).toString();
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jsonString); //отправляем в out json-массив с книгами в виде строки
+                }
+                break;
+            case "/listAuthorsWithoutBooks":  
+                listAuthors = authorFacade.findAll();
+                convertToJson = new ConvertToJson();
+                JsonArray jsonListAuthors = convertToJson.getJsonArrayAuthors(listAuthors);
+                try (PrintWriter out = response.getWriter()) {
+                    out.println(jsonListAuthors.toString()); //отправляем в out json-массив с книгами в виде строки
                 }
                 break;
         }

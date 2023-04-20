@@ -31,16 +31,15 @@ class BookModule{
                            <div class="mb-3 row">
                              <label for="authorId" class="col-sm-5 col-form-label">Список авторов:</label>
                              <div class="col-sm-7">
-                                 <select name="authors" id="authorId" class="form-select" multiple>
-                                     <option value="1">Лев Толстой</option>
-                                     <option value="2">Иван Тургенев</option>
+                                 <select name="authors" id="authorSelect" class="form-select" multiple>
+                                     
                                  </select>
                              </div>
                            </div>
                            <div class="mb-3 row">
                              <label for="coverId" class="col-sm-5 col-form-label justify-content-md-end">Обложки:</label>
                              <div class="col-sm-7">
-                                 <select name="coverId" id="coverId" class="form-select">
+                                 <select name="coverId" id="coverSelect" class="form-select">
 
                                  </select>
                              </div>
@@ -61,9 +60,12 @@ class BookModule{
          })
              .then(listCovers=>listCovers.json())
              .then(listCovers => {
-                 let coverSelect = document.getElementById('coverId');
+                 console.log(JSON.stringify(listCovers));
+                 let coverSelect = document.getElementById('coverSelect');
+                 coverSelect.innerHTML = '';
                  for(let i=0;i<listCovers.length;i++){
                      const cover = listCovers[i];
+                     console.log(JSON.stringify(cover));
                      let option = document.createElement("option");
                      option.text=cover.description;
                      option.value = cover.id;
@@ -73,14 +75,34 @@ class BookModule{
              .catch(error=>{
                  document.getElementById('info').innerHTML="Ошибка чтения списка обложек";
              });
+         await fetch('listAuthorsWithoutBooks',{
+             method:'GET',
+             headers: {'Content-Type':'application/json'}
+         })
+             .then(listAuthors=>listAuthors.json())
+             .then(listAuthors => {
+                 let authorSelect = document.getElementById('authorSelect');
+                 authorSelect.innerHTML = '';
+                 for(let i=0;i< listAuthors.length;i++){
+                     const author = listAuthors[i];
+                     let option = document.createElement("option");
+                     option.text=author.firstname + " " + author.lastname;
+                     option.value = author.id;
+                     authorSelect.appendChild(option);
+                 };
+             })
+             .catch(error=>{
+                 document.getElementById('info').innerHTML="Ошибка чтения списка обложек";
+             });
+             
          const addBook = document.getElementById('addBook');
          addBook.addEventListener('click',e=>{
              const createBookObject = {
                  'bookName': document.getElementById('bookName').value,
                  'publishedYear': document.getElementById('publishedYear').value,
                  'quantity': document.getElementById('quantity').value,
-                 'authorId': document.getElementById('authorId').value,
-                 'coverId': document.getElementById('coverId').value
+                 'authorId': document.getElementById('authorSelect').value,
+                 'coverId': document.getElementById('coverSelect').value
              };
              bookModule.cretateNewBook(createBookObject);
          });
@@ -126,6 +148,7 @@ class BookModule{
                 .then(response => response.json())
                 .then(response => {
                     document.getElementById('info').innerHTML=response.info;
+                    bookModule.printListBooks();
                 })
                 .catch(error=>console.log('error: '+error));
     }

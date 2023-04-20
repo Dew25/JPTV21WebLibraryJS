@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -140,7 +141,8 @@ public class BookServlet extends HttpServlet {
                 List<Cover>listCovers = coverFacade.findAll();
                 ConvertToJson convertToJson = new ConvertToJson();
                 try (PrintWriter out = response.getWriter()) {
-                    out.println(convertToJson.getJsonArrayCovers(listCovers).toString());
+                    JsonArray jsonListCovers = convertToJson.getJsonArrayCovers(listCovers);
+                    out.println(jsonListCovers.toString());
                 }
                 break;
             case "/listBooks":

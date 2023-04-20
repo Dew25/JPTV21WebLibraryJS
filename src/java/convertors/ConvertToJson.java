@@ -90,9 +90,8 @@ public class ConvertToJson {
             job.add("id", cover.getId().toString());
             job.add("url",cover.getUrl());
             job.add("description",cover.getDescription());
-            job.build();
         }
-        return jar.add(job).build();
+        return jar.add(job.build()).build();
         
     }
 }
