@@ -140,9 +140,9 @@ public class BookServlet extends HttpServlet {
             case "/listCovers":
                 List<Cover>listCovers = coverFacade.findAll();
                 ConvertToJson convertToJson = new ConvertToJson();
-                JsonArray jsonArrayCovers = convertToJson.getJsonArrayCovers(listCovers);
                 try (PrintWriter out = response.getWriter()) {
-                    out.println(jsonArrayCovers.toString());
+                    JsonArray jsonListCovers = convertToJson.getJsonArrayCovers(listCovers);
+                    out.println(jsonListCovers.toString());
                 }
                 break;
             case "/listBooks":

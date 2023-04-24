@@ -61,8 +61,10 @@ class BookModule{
              .then(listCovers=>listCovers.json())
              .then(listCovers => {
                  let coverSelect = document.getElementById('coverSelect');
+                 coverSelect.innerHTML = '';
                  for(let i=0;i<listCovers.length;i++){
                      const cover = listCovers[i];
+                     console.log(JSON.stringify(cover));
                      let option = document.createElement("option");
                      option.text=cover.description;
                      option.value = cover.id;
@@ -79,10 +81,11 @@ class BookModule{
              .then(listAuthors=>listAuthors.json())
              .then(listAuthors => {
                  let authorSelect = document.getElementById('authorSelect');
-                 for(let i=0;i<listAuthors.length;i++){
+                 authorSelect.innerHTML = '';
+                 for(let i=0;i< listAuthors.length;i++){
                      const author = listAuthors[i];
                      let option = document.createElement("option");
-                     option.text=author.firstname +' '+author.lastname;
+                     option.text=author.firstname + " " + author.lastname;
                      option.value = author.id;
                      authorSelect.appendChild(option);
                  };
@@ -90,6 +93,7 @@ class BookModule{
              .catch(error=>{
                  document.getElementById('info').innerHTML="Ошибка чтения списка авторов";
              });
+
          const addBook = document.getElementById('addBook');
          addBook.addEventListener('click',e=>{
              const createBookObject = {
