@@ -7,6 +7,7 @@ package convertors;
 import entity.Author;
 import entity.Book;
 import entity.Cover;
+import entity.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +28,7 @@ public class ConvertToJson {
      * @param mapAuthors
      * @return JsonArray - массив объектов JsonEntry с ключем "author" и значением "authorBooks"
      */
-    public JsonArray getJsonObjectMap(Map<Author, List<Book>> mapAuthors){
+    public JsonArray getJsonObjectMapAuthors(Map<Author, List<Book>> mapAuthors){
         JsonArrayBuilder jsonMapBuilder = Json.createArrayBuilder();
         JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
         //Чтобы получить значения mapAuthors в цикле проходим 
@@ -86,13 +87,43 @@ public class ConvertToJson {
         JsonObjectBuilder job = Json.createObjectBuilder();
         for (int i = 0; i < listCovers.size(); i++) {
             Cover cover = listCovers.get(i);
-            job = Json.createObjectBuilder();
-            job.add("id", cover.getId().toString());
+            job.add("id", cover.getId());
             job.add("url",cover.getUrl());
             job.add("description",cover.getDescription());
-            job.build();
+            jar.add(job);
         }
-        return jar.add(job).build();
+        return jar.build();
         
+    }
+
+    public JsonArray getJsonObjectMapUsers(Map<User, List<Book>> mapUsers) {
+        JsonArrayBuilder jsonMapBuilder = Json.createArrayBuilder();
+        JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
+        for(Entry entry: mapUsers.entrySet()){
+            User user = (User) entry.getKey();
+            List<Book> readingBooks = (List<Book>) entry.getValue();
+            JsonObject jsonObjectUser = getJsonObjectUser(user);
+            JsonArray jsonArrayReadingBooks = getJsonArrayBooks(readingBooks);
+            jsonEntryObjectBuilder.add("key",jsonObjectUser);
+            jsonEntryObjectBuilder.add("value",jsonArrayReadingBooks);
+            jsonMapBuilder.add(jsonEntryObjectBuilder.build());
+        }
+        return jsonMapBuilder.build(); 
+    }
+
+    private JsonObject getJsonObjectUser(User user) {
+        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonObjectBuilder job = Json.createObjectBuilder();
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            String role  = user.getRoles().get(i);
+            jar.add(role);
+        }
+        job.add("id", user.getId())
+                .add("firstname", user.getFirstname())
+                .add("lastname", user.getLastname())
+                .add("phone", user.getPhone())
+                .add("login", user.getLogin())
+                .add("roles",jar.build());
+        return job.build();    
     }
 }

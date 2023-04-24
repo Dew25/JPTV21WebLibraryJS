@@ -1,6 +1,6 @@
 import {bookModule} from './BookModule.js';
-class AuthorModule{
-    async printCreateAuthor(){
+class LoginModule{
+    async printFormLogin(){
         // const add_book = document.getElementById('add_book');
          document.getElementById('content').innerHTML=
         `<h1  class="w-100 d-flex justify-content-center">Новый автор:</h1>
