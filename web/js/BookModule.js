@@ -121,7 +121,7 @@ class BookModule{
        await fetch('listBooks',{
            method: 'GET',
            credentials: 'include',
-           headers: {'Content-Type': 'application/json'}
+           headers: {'Content-Type': 'application/json'},
        })
                .then(listBooks=>listBooks.json())//преобразовываем полученную строку в которой
        //записан json-массив с книгами в js-массив

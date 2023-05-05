@@ -26,6 +26,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.AuthorFacade;
 import session.BookFacade;
 import session.UserFacade;
@@ -57,7 +58,33 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession(false);
         JsonObjectBuilder job = Json.createObjectBuilder();
+        if(session == null){
+            job.add("info", "У вас нет права. Авторизуйтесь");
+            job.add("status", false);
+            try (PrintWriter out = response.getWriter()) {
+                out.println(job.build().toString());
+            }
+            return;
+        }
+        User authUser = (User) session.getAttribute("authUser");
+        if (authUser == null){
+            job.add("info", "У вас нет права. Авторизуйтесь");
+            job.add("status", false);
+            try (PrintWriter out = response.getWriter()) {
+                out.println(job.build().toString());
+            }
+            return;
+        }
+        if(!authUser.getRoles().contains(UserServlet.Role.ADMINISTRATOR.toString())){
+            job.add("info", "У вас нет права. Авторизуйтесь");
+            job.add("status", false);
+            try (PrintWriter out = response.getWriter()) {
+                out.println(job.build().toString());
+            }
+            return;
+        }
         String path = request.getServletPath();
         switch (path) {
             case "/changeRoleData":
@@ -98,6 +125,7 @@ public class AdminServlet extends HttpServlet {
                 }else{
                     user.getRoles().add(role);
                     userFacade.edit(user);
+                    session.setAttribute("authUser", user);
                     job.add("status", true);
                     job.add("info", "Роль добавлена");
                     try (PrintWriter out = response.getWriter()) {
@@ -129,6 +157,7 @@ public class AdminServlet extends HttpServlet {
                 }else{
                     user.getRoles().remove(role);
                     userFacade.edit(user);
+                    session.setAttribute("authUser", user);
                     job.add("status", true);
                     job.add("info", "Роль удалена");
                     try (PrintWriter out = response.getWriter()) {

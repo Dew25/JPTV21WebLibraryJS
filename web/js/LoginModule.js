@@ -70,6 +70,7 @@ class LoginModule{
                     document.getElementById('info').innerHTML=response.info;
                     sessionStorage.setItem('authUser',JSON.stringify(response.authUser));
                     bookModule.printListBooks();
+                    checkAuthUser();
                 })
                 .catch(error=>console.log('error: '+error));
     }  
