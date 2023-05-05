@@ -16,6 +16,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import servlets.UserServlet;
 
 /**
  *
@@ -111,7 +112,7 @@ public class ConvertToJson {
         return jsonMapBuilder.build(); 
     }
 
-    private JsonObject getJsonObjectUser(User user) {
+    public JsonObject getJsonObjectUser(User user) {
         JsonArrayBuilder jar = Json.createArrayBuilder();
         JsonObjectBuilder job = Json.createObjectBuilder();
         for (int i = 0; i < user.getRoles().size(); i++) {
@@ -125,5 +126,21 @@ public class ConvertToJson {
                 .add("login", user.getLogin())
                 .add("roles",jar.build());
         return job.build();    
+    }
+    public JsonArray getJsonArrayUsers(List<User> listUsers){
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (int i = 0; i < listUsers.size(); i++) {
+            User user = listUsers.get(i);
+            jab.add(getJsonObjectUser(user));
+        }
+        return jab.build();
+    }
+    public JsonArray getJsonArrayRoles(){
+        JsonArrayBuilder jar = Json.createArrayBuilder();
+        for (int i = 0; i < UserServlet.Role.values().length;i++) {
+            Object elem = UserServlet.Role.values()[i];
+            jar.add(elem.toString());
+        }
+        return jar.build();
     }
 }

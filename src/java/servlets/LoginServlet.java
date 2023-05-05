@@ -6,16 +6,11 @@
 package servlets;
 
 import convertors.ConvertToJson;
-import entity.Book;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -24,7 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import session.HistoryFacade;
+import javax.servlet.http.HttpSession;
+import session.BookFacade;
 import session.UserFacade;
 import tools.PassEncrypt;
 
@@ -32,16 +28,34 @@ import tools.PassEncrypt;
  *
  * @author Melnikov
  */
-@WebServlet(name = "UserServlet", urlPatterns = {
-    "/userRegistration",
-    "/listUsers",
+@WebServlet(name = "LoginServlet", loadOnStartup = 1, urlPatterns = {
+    "/login",
+   
     
 })
-public class UserServlet extends HttpServlet {
-    public static enum Role {USER,EMPLOYEE,ADMINISTRATOR};
-    private PassEncrypt passEncrypt;
-    @EJB UserFacade userFacade;
-    @EJB HistoryFacade historyFacade;
+public class LoginServlet extends HttpServlet {
+    @EJB private UserFacade userFacade;
+    @EJB private BookFacade bookFacade;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        if(userFacade.count()>0) return;
+        User user = new User();
+        user.setFirstname("Juri");
+        user.setLastname("Melnikov");
+        user.setPhone("5656565656");
+        user.setLogin("Administrator");
+        PassEncrypt pe = new PassEncrypt();
+        user.setSalt(pe.getSalt());
+        user.setPassword(pe.getEncryptedPass("12345", user.getSalt()));
+        user.getRoles().add(UserServlet.Role.USER.toString());
+        user.getRoles().add(UserServlet.Role.EMPLOYEE.toString());
+        user.getRoles().add(UserServlet.Role.ADMINISTRATOR.toString());
+        userFacade.create(user);
+    }
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -58,47 +72,51 @@ public class UserServlet extends HttpServlet {
         JsonObjectBuilder job = Json.createObjectBuilder();
         String path = request.getServletPath();
         switch (path) {
-            case "/userRegistration":
+            case "/login":
                 JsonReader jsonReader = Json.createReader(request.getReader());
-                JsonObject jsonObject = jsonReader.readObject();
-                String firstname = jsonObject.getString("firstname");
-                String lastname = jsonObject.getString("lastname");
-                String phone = jsonObject.getString("phone");
-                String login = jsonObject.getString("login");
-                String password = jsonObject.getString("password");
-               
-                User user = new User();
-                user.setFirstname(firstname);
-                user.setLastname(lastname);
-                user.setPhone(phone);
-                user.setLogin(login);
-                passEncrypt = new PassEncrypt();
-                user.setSalt(passEncrypt.getSalt());
-                password = passEncrypt.getEncryptedPass(password, user.getSalt());
-                user.setPassword(password);
-                user.getRoles().add(UserServlet.Role.USER.toString());
-                userFacade.create(user);
-                job.add("info", "Пользователь добавлен");
+                JsonObject loginJsonObject = jsonReader.readObject();
+                String login = loginJsonObject.getString("login");
+                String password = loginJsonObject.getString("password");
+                User user = userFacade.findUser(login);
+                if(user == null){
+                    job.add("info","Неправильный логин или пароль");
+                        try (PrintWriter out = response.getWriter()) {
+                        out.println(job.build().toString());
+                    }
+                }
+                PassEncrypt pe = new PassEncrypt();
+                password=pe.getEncryptedPass(password, user.getSalt());
+                if(!password.equals(user.getPassword())){
+                    job.add("info","Неправильный логин или пароль");
+                    try (PrintWriter out = response.getWriter()) {
+                        out.println(job.build().toString());
+                    }
+                }
+                HttpSession session = request.getSession(true);
+                session.setAttribute("authUser", user);
+                job.add("info", "Вы вошли как "+ user.getLogin());
+                job.add("authUser", new ConvertToJson().getJsonObjectUser(user));
                 try (PrintWriter out = response.getWriter()) {
                     out.println(job.build().toString());
                 }
-              break;
-            case "/listUsers":
-                List<User> listUsers = userFacade.findAll();
-                Map<User,List<Book>> mapUsers = new HashMap<>();
-                for (int i = 0; i < listUsers.size(); i++) {
-                    user = listUsers.get(i);
-                    List<Book> readingBooks = historyFacade.getReadingBooks(user);
-                    mapUsers.put(user, readingBooks);
+                break;
+            case "/logout":
+                session = request.getSession(false);
+                if(session != null){
+                    if(session.getAttribute("authUser") != null){
+                        session.invalidate();
+                        job.add("info","Вы вышли из программы");
+                        try (PrintWriter out = response.getWriter()) {
+                            out.println(job.build().toString());
+                        }
+                    }
                 }
-                JsonArray JsonArrayMapListUsers = new ConvertToJson().getJsonObjectMapUsers(mapUsers);
-                try (PrintWriter out = response.getWriter()) {
-                    out.println(JsonArrayMapListUsers.toString());
-                }
-              break;
+                break;
         }
-    }
 
+        
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

@@ -66,6 +66,7 @@ class UserModule{
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(userForm)
         };
         await fetch('userRegistration',requestOptions)
@@ -78,6 +79,7 @@ class UserModule{
     async printListUsers(){
        await fetch('listUsers',{
            method: 'GET',
+           credentials: 'include',
            headers: {'Content-Type': 'application/json'}
        })
                .then(response=>response.json())

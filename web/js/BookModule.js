@@ -56,6 +56,7 @@ class BookModule{
          `;
          await fetch('listCovers',{
              method:'GET',
+             credentials: 'include',
              headers: {'Content-Type':'application/json'}
          })
              .then(listCovers=>listCovers.json())
@@ -76,6 +77,7 @@ class BookModule{
              });
          await fetch('listAllAuthors',{
              method:'GET',
+             credentials: 'include',
              headers: {'Content-Type':'application/json'}
          })
              .then(listAuthors=>listAuthors.json())
@@ -118,6 +120,7 @@ class BookModule{
                    </div>`;
        await fetch('listBooks',{
            method: 'GET',
+           credentials: 'include',
            headers: {'Content-Type': 'application/json'}
        })
                .then(listBooks=>listBooks.json())//преобразовываем полученную строку в которой
@@ -134,6 +137,7 @@ class BookModule{
 
                        boxListBooks.insertAdjacentHTML("beforeend", cart);
                    }
+                   document.getElementById('info').innerHTML='';
                })
                .catch(error => "error: "+error);
     }
@@ -145,6 +149,7 @@ class BookModule{
                    </div>`;
        await fetch('listReadedBooks',{
            method: 'GET',
+           credentials: 'include',
            headers: {'Content-Type': 'application/json'}
        })
                .then(listBooks=>listBooks.json())//преобразовываем полученную строку в которой
@@ -168,6 +173,7 @@ class BookModule{
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
             body: JSON.stringify(createBookObject)
         };
         await fetch('createBook',requestOptions)
