@@ -7,6 +7,7 @@ package convertors;
 import entity.Author;
 import entity.Book;
 import entity.Cover;
+import entity.History;
 import entity.User;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +68,12 @@ public class ConvertToJson {
     }
     
     public JsonArray getJsonArrayAuthors(List<Author>listAuthors){
-        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
         for (int i = 0; i < listAuthors.size(); i++) {
             Author author = listAuthors.get(i);
-            jar.add(getJsonObjectAuthor(author));
+            jab.add(getJsonObjectAuthor(author));
         }
-        return jar.build();
+        return jab.build();
     }
     
     public JsonArray getJsonArrayBooks(List<Book>listBooks){
@@ -84,16 +85,16 @@ public class ConvertToJson {
         return jar.build();
     }
     public JsonArray getJsonArrayCovers(List<Cover> listCovers){
-        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
         JsonObjectBuilder job = Json.createObjectBuilder();
         for (int i = 0; i < listCovers.size(); i++) {
             Cover cover = listCovers.get(i);
             job.add("id", cover.getId());
             job.add("url",cover.getUrl());
             job.add("description",cover.getDescription());
-            jar.add(job);
+            jab.add(job);
         }
-        return jar.build();
+        return jab.build();
         
     }
 
@@ -113,18 +114,18 @@ public class ConvertToJson {
     }
 
     public JsonObject getJsonObjectUser(User user) {
-        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
         JsonObjectBuilder job = Json.createObjectBuilder();
         for (int i = 0; i < user.getRoles().size(); i++) {
             String role  = user.getRoles().get(i);
-            jar.add(role);
+            jab.add(role);
         }
         job.add("id", user.getId())
                 .add("firstname", user.getFirstname())
                 .add("lastname", user.getLastname())
                 .add("phone", user.getPhone())
                 .add("login", user.getLogin())
-                .add("roles",jar.build());
+                .add("roles",jab.build());
         return job.build();    
     }
     public JsonArray getJsonArrayUsers(List<User> listUsers){
@@ -136,11 +137,26 @@ public class ConvertToJson {
         return jab.build();
     }
     public JsonArray getJsonArrayRoles(){
-        JsonArrayBuilder jar = Json.createArrayBuilder();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
         for (int i = 0; i < UserServlet.Role.values().length;i++) {
             Object elem = UserServlet.Role.values()[i];
-            jar.add(elem.toString());
+            jab.add(elem.toString());
         }
-        return jar.build();
+        return jab.build();
+    }
+    public JsonArray getJsonArrayHistory(List<History> listHistories){
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (int i = 0; i < listHistories.size(); i++) {
+            History history = listHistories.get(i);
+            jab.add(getJsonObjectHistory(history));
+        }
+        return jab.build();
+    }
+    public JsonObject getJsonObjectHistory(History history){
+        JsonObjectBuilder job = Json.createObjectBuilder();
+        job.add("id", history.getId());
+        job.add("book", getJsonObjectBook(history.getBook()));
+        job.add("user", getJsonObjectUser(history.getUser()));
+       return job.build();
     }
 }
