@@ -1,6 +1,6 @@
 import {coverModule} from './CoverModule.js';
 class BookModule{
-    async printCreateBook(){
+    printCreateBook(){
         // const add_book = document.getElementById('add_book');
          document.getElementById('content').innerHTML=
                  //add_book;
@@ -54,7 +54,7 @@ class BookModule{
                  </div>
              </div>
          `;
-         await fetch('listCovers',{
+         fetch('listCovers',{
              method:'GET',
              credentials: 'include',
              headers: {'Content-Type':'application/json'}
@@ -75,7 +75,7 @@ class BookModule{
              .catch(error=>{
                  document.getElementById('info').innerHTML="Ошибка чтения списка обложек";
              });
-         await fetch('listAllAuthors',{
+         fetch('listAllAuthors',{
              method:'GET',
              credentials: 'include',
              headers: {'Content-Type':'application/json'}
@@ -112,13 +112,13 @@ class BookModule{
              coverModule.printFormAddCover();
          });
     };
-    async printListBooks(){
+   printListBooks(){
        document.getElementById('content').innerHTML=
                `<h3 class="w-100 mt-5 d-flex justify-content-center">Список книг</h3>
                    <div id="box_listBooks" class="w-100 d-flex justify-content-center p-5">
 
                    </div>`;
-       await fetch('listBooks',{
+      fetch('listBooks',{
            method: 'GET',
            credentials: 'include',
            headers: {'Content-Type': 'application/json'},

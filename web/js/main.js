@@ -55,6 +55,11 @@ const returnBook = document.getElementById('returnBook');
         e.preventDefault();
         userModule.returnBookForm();
     });
+const statisticForm = document.getElementById('statisticForm');
+    statisticForm.addEventListener('click', e=>{
+        e.preventDefault();
+        adminModule.printStatisticForm();
+    });
 function checkAuthUser(){
     let authUser = JSON.parse(sessionStorage.getItem('authUser'));
     if(authUser === null){

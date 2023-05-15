@@ -12,11 +12,13 @@ import entity.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+
 import servlets.UserServlet;
 
 /**
@@ -159,4 +161,18 @@ public class ConvertToJson {
         job.add("user", getJsonObjectUser(history.getUser()));
        return job.build();
     }
+    public JsonArray getJAMapStatistic(Map<Book,Integer> mapBookRange){
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        JsonObjectBuilder jsonEntryObjectBuilder = Json.createObjectBuilder();
+        for(Entry entry: mapBookRange.entrySet()){
+            Book book = (Book) entry.getKey();
+            int n = (int) entry.getValue();
+            jsonEntryObjectBuilder.add("key", getJsonObjectBook(book));
+            jsonEntryObjectBuilder.add("value", n);
+        }
+        jab.add(jsonEntryObjectBuilder);
+        return jab.build();
+    }
+ 
+    
 }

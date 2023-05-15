@@ -54,8 +54,7 @@ public class Author implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.id);
-        hash = 29 * hash + Objects.hashCode(this.firstname);
-        hash = 29 * hash + Objects.hashCode(this.lastname);
+
         return hash;
     }
 
